@@ -48,10 +48,22 @@ const handler = NextAuth({
         })
     ],
     callbacks:{
-        async jwt({ token, user }) {
-            return { ...token, ...user,'jwt return': 'jwt return' };
-        },
 
+        /**
+         * JWT Callback
+         * 웹 토큰이 실행 혹은 업데이트 될 때마다 콜백이 실행
+         * 반환된 값은 암호화되어 쿠키에 저장됨
+         */
+
+        async jwt({ token, user, account }) {
+            return { ...token, ...user};
+        },
+        /**
+         * Session Callback
+         * ClientSide에서 NextAuth에 세션을 체크할때마다 실행
+         * 반환된 값은 useSession을 통해 ClientSide에서 사용할 수 있음
+         * JWT 토큰의 정보를 Session에 유지 시킨다.
+         */
         async session({ session, token }) {
             console.log('$$$ token: ', token)
             session.user = token as any;
